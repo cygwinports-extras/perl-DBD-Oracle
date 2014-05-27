@@ -1,0 +1,79 @@
+--- origsrc/DBD-Oracle-1.74/Oracle.h	2014-04-24 20:03:05.000000000 -0500
++++ src/DBD-Oracle-1.74/Oracle.h	2014-05-27 10:26:55.841898400 -0500
+@@ -26,7 +26,7 @@
+ #endif
+ 
+ /* egcs-1.1.2 does not have _int64 */
+-#if defined(__MINGW32__) || defined(__CYGWIN32__)
++#if defined(__MINGW32__) || defined(__CYGWIN__)
+ #define _int64 long long
+ #endif
+ 
+--- origsrc/DBD-Oracle-1.74/Oracle.xs	2014-04-24 20:03:05.000000000 -0500
++++ src/DBD-Oracle-1.74/Oracle.xs	2014-05-27 10:26:55.846899000 -0500
+@@ -104,7 +104,7 @@ ora_env_var(name)
+ 		sv_setpv(sv, p);
+ 	ST(0) = sv;
+ 
+-#if defined(__CYGWIN32__) || defined(__CYGWIN64__)
++#if defined(__CYGWIN__)
+ void
+ ora_cygwin_set_env(name, value)
+ 	char * name
+@@ -112,7 +112,7 @@ ora_cygwin_set_env(name, value)
+ 	CODE:
+ 	ora_cygwin_set_env(name, value);
+ 
+-#endif /* __CYGWIN32__ */
++#endif /* __CYGWIN__ */
+ 
+ 
+ INCLUDE: Oracle.xsi
+--- origsrc/DBD-Oracle-1.74/dbdimp.c	2014-04-24 20:03:05.000000000 -0500
++++ src/DBD-Oracle-1.74/dbdimp.c	2014-05-27 10:26:55.892404800 -0500
+@@ -13,10 +13,10 @@
+ #define strcasecmp strcmpi
+ #endif
+ 
+-#ifdef __CYGWIN32__
++#ifdef __CYGWIN__
+ #include "w32api/windows.h"
+ #include "w32api/winbase.h"
+-#endif /* __CYGWIN32__ */
++#endif /* __CYGWIN__ */
+ 
+ #include "Oracle.h"
+ 
+@@ -164,7 +164,7 @@ ora_env_var(char *name, char *buf, unsig
+ 	return buf;
+ }
+ 
+-#ifdef __CYGWIN32__
++#ifdef __CYGWIN__
+ /* Under Cygwin there are issues with setting environment variables
+  * at runtime such that Windows-native libraries loaded by a Cygwin
+  * process can see those changes.
+@@ -190,7 +190,7 @@ ora_cygwin_set_env(char *name, char *val
+ {
+ 	SetEnvironmentVariable(name, value);
+ }
+-#endif /* __CYGWIN32__ */
++#endif /* __CYGWIN__ */
+ 
+ 
+ void
+--- origsrc/DBD-Oracle-1.74/dbdimp.h	2014-04-24 20:03:05.000000000 -0500
++++ src/DBD-Oracle-1.74/dbdimp.h	2014-05-27 10:26:55.896405300 -0500
+@@ -369,10 +369,10 @@ ub4 ora_parse_uid _((imp_dbh_t *imp_dbh,
+ char *ora_sql_error _((imp_sth_t *imp_sth, char *msg));
+ char *ora_env_var(char *name, char *buf, unsigned long size);
+ 
+-#ifdef __CYGWIN32__
++#ifdef __CYGWIN__
+ void ora_cygwin_set_env(char *name, char *value);
+ 
+-#endif /* __CYGWIN32__ */
++#endif /* __CYGWIN__ */
+ 
+ sb4 dbd_phs_in _((dvoid *octxp, OCIBind *bindp, ub4 iter, ub4 index,
+ 			  dvoid **bufpp, ub4 *alenp, ub1 *piecep, dvoid **indpp));

@@ -1,0 +1,25 @@
+# This package CANNOT be distributed in binary form because OCI is closed source
+
+CPAN_AUTHOR=pythian
+inherit perl
+
+NAME="perl-DBD-Oracle"
+VERSION=1.74
+RELEASE=1
+CATEGORY="Perl"
+SUMMARY="Oracle driver for Perl DBI"
+DESCRIPTION="DBD::Oracle is a Perl module which works with the DBI module to
+provide access to Oracle databases."
+
+PATCH_URI="1.74-cygwin64.patch"
+
+if ! defined ORACLE_HOME
+then
+	error "ORACLE_HOME must be defined"
+fi
+
+src_test() {
+	cd ${B}
+	PATH="$(find $(cygpath -u $ORACLE_HOME) -iname oci.dll | xargs dirname):$PATH" \
+	make test
+}
